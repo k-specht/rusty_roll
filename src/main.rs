@@ -70,9 +70,7 @@ fn main() {
                 if inp.contains("Y") {
                     println!("Running build script, this will take a while...");
                     let output = if cfg!(target_os = "windows") {
-                        //Command::new("\"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe\"")
                         Command::new("cmd")
-                                //.args(&["/C", "echo hello"])
                                 .args(&["/C", "cd", "bin"]) // Move terminal to bin directory (cd bin)
                                 .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
                                 .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
