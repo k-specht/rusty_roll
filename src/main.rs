@@ -10,8 +10,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     // If there are arguments, match them against allowed behavior
-    if args.len() > 0 {
-        match args[0].as_str() {
+    if args.len() > 1 {
+        match args[1].as_str() {
             // Lists supported args
             "--help" | "-h" => {
                 println!("Supported args:\n-h / --help = Lists args & usage.");
@@ -20,8 +20,8 @@ fn main() {
 
             // Builds methods for a crate that loads that video
             "--build" | "-b" => {
-                if args.len() > 1 {
-                    let filename = &args[1];
+                if args.len() > 2 {
+                    let filename = &args[2];
 
                     // If file exists, prompt to quit if it is larger than 10MB
                     let meta = metadata(filename).expect("File not found.");
@@ -50,7 +50,7 @@ fn main() {
 
                         // Copy video.rs to a new crate
                         std::fs::create_dir_all("bin").expect("Error creating directory \"bin\".");
-                        std::fs::copy("video.rs", "bin/main.rs").expect("Failed to copy video.rs to bin directory.");
+                        std::fs::copy("src/video.rs", "bin/main.rs").expect("Failed to copy video.rs to bin directory.");
 
                         // Format the output to a new module & write to the new crate
                         let func_calls = create_module("bin/roll.rs", output, filename);
@@ -67,16 +67,17 @@ fn main() {
 
             // Try to build the new crate
             "-r" | "--run" => {
-                if args.len() > 1 {
+                if args.len() > 2 {
                     let _crate_name = &args[1];
+                    // Move terminal to bin directory (cd bin)
 
-                    // Try finding the crate
+                    // Set up the crate if needed (cmd -> cargo init)
 
-                    // If it exists, confirm that the user wants to build it (takes half an hour)
+                    // Confirm that the user wants to build it (can take around half an hour)
 
-                    // Build the crate
+                    // Build the crate (cmd -> cargo build)
 
-                    // Quit with a success or fail message
+                    // Quit
                 }
             }
 
@@ -143,14 +144,17 @@ fn append_rolls(filename: &str, num: usize) {
     out += "//Saves the video to the local directory\n";
     out += "fn save_video(filename: &str) {\n";
 
+    // Adds logic to open the filename
+    out += "let mut file = OpenOptions::new().append(true).read(true).create(true).open(filename).expect(\"Failed to open file.\");\n";
+
     // Creates calls for the auto-generated functions
     for i in 0..num {
         out += "    file.write_all(&roll::roll::roll";
         out += &i.to_string();
-        out += "roll()).unwrap();\n";
+        out += "()).unwrap();\n";
     }
 
-    out += "\n";
+    out += "}\n";
 
     // Append the new calls to the specified file
     let mut f = OpenOptions::new()
@@ -166,8 +170,9 @@ fn create_module(filename: &str, data: Vec<u8>, custom_name: &str) -> usize {
         
     // Open file in write mode
     //let mut file = File::create(filename).unwrap();
+    let _ = std::fs::remove_file(filename); // don't care if it fails
     let mut f = OpenOptions::new()
-        .append(true)
+        .write(true)
         .read(true)
         .create(true)
         .open(filename)
@@ -197,9 +202,9 @@ fn create_module(filename: &str, data: Vec<u8>, custom_name: &str) -> usize {
     out_string += "pub mod roll {\n";
 
     // Customizes executable filename
-    out_string += "pub fn name() -> String { ";
+    out_string += "pub fn name() -> String { let res = String::from(\"";
     out_string += custom_name;
-    out_string += " }\n";
+    out_string += "\"); res }\n";
 
     // Adds functions to the module
     for set in dataset {

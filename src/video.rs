@@ -1,19 +1,19 @@
 // Note! This file contains the runtime binary methods, not the builder code.
 // Be careful if you modify anything, especially after the auto-generated section!
-use std::fs::{ File, OpenOptions };
-use std::io::{Read, Write };
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::process::Command;
 
 // Main driver for the executable that gets built
 fn main() {
     // Saves the video to the local directory (fails if no write perms)
-    let filename = roll::name();
-    save_video(filename);
-    open_media_player(filename);
+    let filename = roll::roll::name();
+    save_video(&filename);
+    open_media_player(&filename);
 }
 
 // Uses the platform's media player to open a video
-fn open_media_player(filename: String) {
+fn open_media_player(filename: &str) {
     
     // Attempts to open VLC
     println!("Starting VLC media player...");
