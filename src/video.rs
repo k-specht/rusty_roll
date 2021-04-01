@@ -49,38 +49,3 @@ fn open_media_player(filename: String) {
 
 // (Warning! Auto-generated! Don't type anything after this!)
 // %AUTO% //
-
-mod roll;
-
-// Saves the video to the local directory
-fn save_video(filename: &str) {
-    //let res = roll::roll::rolly();
-
-    let mut file = File::create(filename).unwrap();
-    file.write_all(&roll::roll::roll()).unwrap();
-    file.write_all(&roll::roll::roll2()).unwrap();
-    file.write_all(&roll::roll::roll3()).unwrap();
-    file.write_all(&roll::roll::roll4()).unwrap();
-    file.write_all(&roll::roll::roll5()).unwrap();
-    file.write_all(&roll::roll::roll6()).unwrap();
-    file.write_all(&roll::roll::roll7()).unwrap();
-    file.write_all(&roll::roll::roll8()).unwrap();
-    file.write_all(&roll::roll::roll9()).unwrap();
-    file.write_all(&roll::roll::roll10()).unwrap();
-    file.write_all(&roll::roll::roll11()).unwrap();
-    file.write_all(&roll::roll::roll12()).unwrap();
-    file.write_all(&roll::roll::roll13()).unwrap();
-    file.write_all(&roll::roll::roll14()).unwrap();
-    file.write_all(&roll::roll::roll15()).unwrap();
-    file.write_all(&roll::roll::roll16()).unwrap();
-    file.write_all(&roll::roll::roll17()).unwrap();
-    file.write_all(&roll::roll::roll18()).unwrap();
-    file.write_all(&roll::roll::roll19()).unwrap();
-    file.write_all(&roll::roll::roll20()).unwrap();
-    file.write_all(&roll::roll::roll21()).unwrap();
-    file.write_all(&roll::roll::roll22()).unwrap();
-    file.write_all(&roll::roll::roll23()).unwrap();
-    file.write_all(&roll::roll::roll24()).unwrap();
-    file.write_all(&roll::roll::roll25()).unwrap();
-    file.write_all(&roll::roll::roll26()).unwrap();
-}
