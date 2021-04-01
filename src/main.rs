@@ -15,7 +15,7 @@ fn main() {
             // Lists supported args
             "--help" | "-h" => {
                 println!("Supported args:\n-h / --help = Lists args & usage.");
-                println!("-b / --build = Builds a loader for the specified file.\nUsage: rustyroll -b \"somefile.mp4\"");
+                println!("-b / --build = Builds a loader for the specified file.\nUsage: rusty_roll -b \"somefile.mp4\"");
             }
 
             // Builds methods for a crate that loads that video
@@ -50,7 +50,7 @@ fn main() {
                         // Configure video.rs to use the module by appending the functions
                         append_rolls("bin/main.rs", func_calls);
                         
-                        println!("Video-embedded binary crate created!\nUse \"rustyroll --run <crate_name>\" to build it, or build it yourself.");
+                        println!("Video-embedded binary crate created!\nUse \"rusty_roll --run <crate_name>\" to build it, or build it yourself.");
                     }
                 } else {
                     println!("ERR: Must specify file name of .mp4 file.");
@@ -96,11 +96,11 @@ fn main() {
 
             // Unsupported arguments
             _ => {
-                println!("ERR: Unsupported argument entered: {}.\nUse \"rustyroll -h\" to get a list of supported args.", args[0]);
+                println!("ERR: Unsupported argument entered: {}.\nUse \"rusty_roll -h\" to get a list of supported args.", args[0]);
             }
         }
     } else {
-        println!("ERR: Must specify command line arguments.\nEx. rustyroll --help");
+        println!("ERR: Must specify command line arguments.\nEx. rusty_roll --help");
     }
 }
 
