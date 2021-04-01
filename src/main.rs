@@ -1,7 +1,7 @@
 use std::fs::{ File, metadata, OpenOptions };
-use std::io::{stdin, Read, Write, Result, prelude::* };
+use std::io::{ Read, Write, Result };
 use std::fmt::Display;
-//use std::process::Command;
+use std::process::Command;
 use std::env;
 
 // Uses the command-line arguments to manage a new crate
@@ -28,19 +28,11 @@ fn main() {
                     let mut proceed = true;
                     if meta.len() > 10000000 {
                         println!("WARNING! This file is over 10 Megabytes. You should probably compress it.");
-                        print!("Continue anyway? (Building this could take well over an hour) [Y/N]:");
-                        
-                        let stdin = stdin();
-                        let inp = stdin.lock().lines().last();
-                        match inp {
-                            Some(x) => {
-                                let input = x.unwrap().to_uppercase();
-                                proceed = input == "Y" || input == "YES";
-                            }
-                            None    => {
-                                panic!("Nothing found in user input, quitting...");
-                            }
-                        }
+                        println!("Continue anyway? (Building this could take well over an hour) [Y/N]:");
+                        let mut inp = String::new();
+                        std::io::stdin().read_line(&mut inp).expect("error: unable to read user input");
+                        inp = inp.to_uppercase();
+                        proceed = inp.contains("Y");
                     }
 
                     // Reads the file & sets up crate
@@ -67,17 +59,40 @@ fn main() {
 
             // Try to build the new crate
             "-r" | "--run" => {
-                if args.len() > 2 {
-                    let _crate_name = &args[1];
-                    // Move terminal to bin directory (cd bin)
+                
+                // Prompts user to continue
+                println!("Are you sure you want to build? \nIt may take up to an hour, depending on file size.");
+                println!("Continue? (Y/N):");
+                let mut inp = String::new();
+                std::io::stdin().read_line(&mut inp).expect("error: unable to read user input");
+                inp = inp.to_uppercase();
 
-                    // Set up the crate if needed (cmd -> cargo init)
-
-                    // Confirm that the user wants to build it (can take around half an hour)
-
-                    // Build the crate (cmd -> cargo build)
-
-                    // Quit
+                if inp.contains("Y") {
+                    println!("Running build script, this will take a while...");
+                    let output = if cfg!(target_os = "windows") {
+                        //Command::new("\"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe\"")
+                        Command::new("cmd")
+                                //.args(&["/C", "echo hello"])
+                                .args(&["/C", "cd", "bin"]) // Move terminal to bin directory (cd bin)
+                                .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
+                                .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
+                                .status()
+                                .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")
+                    } else {
+                        Command::new("sh")
+                                .args(&["-c", "cd", "bin"]) // Move terminal to bin directory (cd bin)
+                                .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
+                                .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
+                                .status()
+                                .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")
+                    };
+                    if !output.success() {
+                        println!("Failed to build the crate, try running \"cargo build --release\" on it manually.");
+                    } else {
+                        println!("Build script completed, hopefully it worked :)");
+                    }
+                } else {
+                    println!("Quitting...");
                 }
             }
 
