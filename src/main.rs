@@ -69,21 +69,21 @@ fn main() {
 
                 if inp.contains('Y') {
                     println!("Running build script, this will take a while...");
+                    let command = "cargo build --release --manifest-path=bin/Cargo.toml";
+
+                    // Run build script and save result
                     let output = if cfg!(target_os = "windows") {
                         Command::new("cmd")
-                                .args(&["/C", "cd", "bin"]) // Move terminal to bin directory (cd bin)
-                                .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
-                                .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
+                                .args(&["/C", command])
                                 .output()
                                 .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")                                
                     } else {
                         Command::new("sh")
-                                .args(&["-c", "cd", "bin"]) // Move terminal to bin directory (cd bin)
-                                .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
-                                .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
+                                .args(&["-c", command])
                                 .output()
                                 .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")
                     };
+
                     if !output.status.success() {
                         println!("Failed to build the crate, try running \"cargo build --release\" on it manually.");
                     } else {
@@ -111,7 +111,6 @@ fn to_byte_array(filename: String) -> Vec<u8> {
     let mut f = File::open(filename).unwrap();
 
     let _bytes = f.read_to_end(&mut output).unwrap();
-    //println!("Read {} bytes into a Vector.", bytes);
 
     output
 }
@@ -181,7 +180,6 @@ fn append_rolls(filename: &str, num: usize) {
 fn create_module(filename: &str, data: Vec<u8>, custom_name: &str) -> usize {
         
     // Open file in write mode
-    //let mut file = File::create(filename).unwrap();
     let _ = std::fs::remove_file(filename); // don't care if it fails
     let mut f = OpenOptions::new()
         .write(true)
@@ -240,7 +238,6 @@ fn create_module(filename: &str, data: Vec<u8>, custom_name: &str) -> usize {
     out_string += "}\n";
 
     // Write data to file
-    //let (vec_data, _size) = vec_to_string(data);
     println!("Done! Writing data to {}.", filename);
     f.write_all(out_string.as_bytes()).unwrap();
     fn_num
