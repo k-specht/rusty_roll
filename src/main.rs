@@ -4,7 +4,7 @@ use std::fmt::Display;
 use std::process::Command;
 use std::env;
 
-// Uses the command-line arguments to manage a new crate
+/// Uses the command-line arguments to manage a new crate.
 fn main() {
     // Command-line args determine behavior of the builder
     let args: Vec<String> = env::args().collect();
@@ -78,7 +78,7 @@ fn main() {
                                 .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")                                
                     } else {
                         Command::new("sh")
-                                .args(&["-c", "cd", "bin", "&", "vlc", "../rickroll.mp4"]) // Move terminal to bin directory (cd bin)
+                                .args(&["-c", "cd", "bin"]) // Move terminal to bin directory (cd bin)
                                 .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
                                 .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
                                 .output()
@@ -104,7 +104,7 @@ fn main() {
     }
 }
 
-// Converts the given file into a byte Vector
+/// Converts the given file into a byte Vector.
 fn to_byte_array(filename: String) -> Vec<u8> {
     let mut output = Vec::new();
 
@@ -116,7 +116,7 @@ fn to_byte_array(filename: String) -> Vec<u8> {
     output
 }
 
-// Converts the given byte Vector into a byte array String & the number of elements
+/// Converts the given byte Vector into a byte array String & the number of elements.
 fn vec_to_string<T>(data: Vec<T>) -> (String, usize) 
 where T: Display {
     let mut output = String::new();
@@ -130,7 +130,7 @@ where T: Display {
     (output, size)
 }
     
-// Reads the specified file or creates an empty one and reads that
+/// Reads the specified file or creates an empty one and reads that.
 fn _read_file(filename: &str) -> Result<String> {
         
     // Open file
@@ -148,6 +148,7 @@ fn _read_file(filename: &str) -> Result<String> {
     Ok(buffer)
 }
 
+/// Appends function calls for the generated functions.
 fn append_rolls(filename: &str, num: usize) {
     // Sets up a custom function that contains generated function calls
     let mut out = String::new();
@@ -176,7 +177,7 @@ fn append_rolls(filename: &str, num: usize) {
     f.write_all(out.as_bytes()).expect("Failed to append to the file!");
 }
 
-// Writes a module to the specified file path and returns the number of methods
+/// Writes a module to the specified file path and returns the number of methods.
 fn create_module(filename: &str, data: Vec<u8>, custom_name: &str) -> usize {
         
     // Open file in write mode
