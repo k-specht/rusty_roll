@@ -6,10 +6,8 @@ Using Rusty Roll
 1. Clone the repo
 2. Run "cargo build --release"
 3. Save a video file to the project directory
-4. In a terminal, open the resulting binary (rusty_roll.exe),
-and give it the following arguments:
-"--build <filename.mp4>"
-5. Run it again with the argument "--run". 
+4. Run "cargo build --release -- --build <filename.mp4>"
+5. Run "cargo build --release -- --run"
 Note: The program will take a long time on this step.
 6. Copy the resulting binary from bin/target/release
 
@@ -20,7 +18,7 @@ Use "rusty_roll --help" to get more information on available commands.
 
 Make sure your video file is small! The program will warn you about 
 any files you try to use >10 Megabytes, since they will take a while to 
-build into the binary. There's a reason .exe icons are so small!
+build into the binary.
 
 Rustc may use a lot of RAM when trying to build the resulting binary file.
 Make sure you have enough RAM, or use a very small video file (~2-3 MB).
