@@ -32,7 +32,7 @@ fn main() {
                         let mut inp = String::new();
                         std::io::stdin().read_line(&mut inp).expect("error: unable to read user input");
                         inp = inp.to_uppercase();
-                        proceed = inp.contains("Y");
+                        proceed = inp.contains('Y');
                     }
 
                     // Reads the file & sets up crate
@@ -50,7 +50,7 @@ fn main() {
                         // Configure video.rs to use the module by appending the functions
                         append_rolls("bin/main.rs", func_calls);
                         
-                        println!("Video-embedded binary crate created!\nUse \"rusty_roll --run <crate_name>\" to build it, or build it yourself.");
+                        println!("Video-embedded binary crate created!\nUse \"cargo run --release -- --run\" to build it, or build it yourself.");
                     }
                 } else {
                     println!("ERR: Must specify file name of .mp4 file.");
@@ -67,24 +67,24 @@ fn main() {
                 std::io::stdin().read_line(&mut inp).expect("error: unable to read user input");
                 inp = inp.to_uppercase();
 
-                if inp.contains("Y") {
+                if inp.contains('Y') {
                     println!("Running build script, this will take a while...");
                     let output = if cfg!(target_os = "windows") {
                         Command::new("cmd")
                                 .args(&["/C", "cd", "bin"]) // Move terminal to bin directory (cd bin)
                                 .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
                                 .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
-                                .status()
-                                .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")
+                                .output()
+                                .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")                                
                     } else {
                         Command::new("sh")
-                                .args(&["-c", "cd", "bin"]) // Move terminal to bin directory (cd bin)
+                                .args(&["-c", "cd", "bin", "&", "vlc", "../rickroll.mp4"]) // Move terminal to bin directory (cd bin)
                                 .args(&["&", "cargo", "init"]) // Set up the crate if needed (cmd -> cargo init)
                                 .args(&["&", "cargo", "build", "--release"]) // Build the crate (cmd -> cargo build)
-                                .status()
+                                .output()
                                 .expect("Failed to build the crate, try running \"cargo build --release\" on it manually.")
                     };
-                    if !output.success() {
+                    if !output.status.success() {
                         println!("Failed to build the crate, try running \"cargo build --release\" on it manually.");
                     } else {
                         println!("Build script completed, hopefully it worked :)");
@@ -121,12 +121,10 @@ fn vec_to_string<T>(data: Vec<T>) -> (String, usize)
 where T: Display {
     let mut output = String::new();
     output += "[\n    ";
-    let mut count = 0;
     let size = data.len();
-    for thing in data {
+    for (count, thing) in data.into_iter().enumerate() {
         output += &thing.to_string();
         output += if count % 10 == 0 {",\n    "} else {", "};
-        count += 1;
     }
     output += "]";
     (output, size)

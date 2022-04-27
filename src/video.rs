@@ -14,22 +14,21 @@ fn main() {
 
 // Uses the platform's media player to open a video
 fn open_media_player(filename: &str) {
-    
     // Attempts to open VLC
     println!("Starting VLC media player...");
     let mut output = if cfg!(target_os = "windows") {
         //Command::new("\"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe\"")
         Command::new("cmd")
                 //.args(&["/C", "echo hello"])
-                .args(&["/C", "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe", filename])
+                .args(&["/C", "\"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe\"", filename])
                 //.arg("exit")
                 .status()
-                .expect("Failed to start VLC! Try opening the generated file yourself :)")
+                .expect("command failed")
     } else {
         Command::new("sh")
                 .args(&["-c", "vlc", filename])
                 .status()
-                .expect("Failed to start VLC! If you have a different media player, try using that instead.")
+                .expect("command failed")
     };
 
     // If it failed to open VLC, Windows 10 has the Movies & TV app! You can't escape the rick roll :)
@@ -37,13 +36,18 @@ fn open_media_player(filename: &str) {
         output = Command::new("cmd")
                     .args(&["/C", "start", "mswindowsvideo:", "ofe|help|", filename])
                     .status()
-                    .expect("Failed to open VLC and Windows Movies & TV. Try opening the file manually.")
+                    .expect("command failed");
+    } else if !output.success() && cfg!(target_os = "linux") {
+        output = Command::new("sh")
+                    .args(&["-c", "xdg-open", filename])
+                    .status()
+                    .expect("command failed");
     }
 
     if output.success() {
-        println!("Haha, gotcha! You cannot escape the rick rolling. :)");
+        println!("Haha, gotcha! :)");
     } else {
-        println!("Darn, you must be using some old Windows version, or never installed VLC on linux.\nI tried!");
+        println!("Aw... try opening the file yourself anyway?");
     }
 }
 
